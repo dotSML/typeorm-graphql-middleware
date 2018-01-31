@@ -4,6 +4,7 @@ import * as cors from 'cors';
 import { makeExecutableSchema } from 'graphql-tools';
 import { ValidationContext, GraphQLFieldResolver, GraphQLError } from 'graphql';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { apolloUploadExpress } from 'apollo-upload-server'
 import getTypeDefs from '../services/get-type-definitions';
 import getResolvers from '../services/get-resolvers';
 import createTypeormLoader, { TypeormLoader } from '../services/typeorm-loader';
@@ -96,6 +97,7 @@ export default function graphqlServerMiddleware(
 		endpointUrl || '/graphql',
 		whitelist ? cors(corsOptions) : (_, __, next) => next(),
 		bodyParser.json(),
+		apolloUploadExpress(),
 		graphqlExpress({
 			...rest,
 			schema,
