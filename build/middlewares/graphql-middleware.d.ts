@@ -42,4 +42,5 @@ export declare type GraphqlServerContext<P = {}> = {
 export default function graphqlServerMiddleware(options: GraphqlServerOptions & {
     resolversGlobPattern: string[];
     typeDefsGlobPattern: string[];
+    applyMiddleware: Array<(args?: any) => any>;
 }): express.Router;

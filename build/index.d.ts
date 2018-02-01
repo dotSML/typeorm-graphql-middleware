@@ -16,7 +16,8 @@ export interface TypeormGraphqlMiddlewareConfig {
         simulatedLatency?: number;
         logging?: boolean;
     };
+    applyMiddleware?: Array<(args?: any) => any>;
 }
-declare const typeormGraphqlMiddleware: ({debug, paths, graphql}: TypeormGraphqlMiddlewareConfig) => Promise<express.Router>;
+declare const typeormGraphqlMiddleware: ({debug, paths, applyMiddleware, graphql}: TypeormGraphqlMiddlewareConfig) => Promise<express.Router>;
 export default typeormGraphqlMiddleware;
 export { FieldResolver, SubscriptionResolver, RootResolver, resolve, GraphqlServerOptions, createTypings, createSchema, GraphqlServerContext, TypeormLoader, createTypeormLoader };

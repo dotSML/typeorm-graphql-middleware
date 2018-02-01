@@ -16,14 +16,21 @@ export interface TypeormGraphqlMiddlewareConfig {
 		simulatedLatency?: number;
 		logging?: boolean;
 	};
+	applyMiddleware?: Array<(args?: any) => any>;
 }
 
-const typeormGraphqlMiddleware = async ({ debug = {}, paths, graphql }: TypeormGraphqlMiddlewareConfig) => {
+const typeormGraphqlMiddleware = async ({
+	debug = {},
+	paths,
+	applyMiddleware = [],
+	graphql,
+}: TypeormGraphqlMiddlewareConfig) => {
 	return graphqlMiddleware({
 		simulatedLatency: debug.simulatedLatency || 0,
 		resolversGlobPattern: paths.resolvers,
 		typeDefsGlobPattern: paths.typeDefs,
 		debug: debug.logging,
+		applyMiddleware,
 		...graphql,
 	}) as express.Router;
 };

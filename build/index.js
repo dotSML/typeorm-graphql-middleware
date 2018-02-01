@@ -17,8 +17,8 @@ const create_schema_1 = require("./services/create-schema");
 exports.createSchema = create_schema_1.default;
 const typeorm_loader_1 = require("./services/typeorm-loader");
 exports.createTypeormLoader = typeorm_loader_1.default;
-const typeormGraphqlMiddleware = ({ debug = {}, paths, graphql }) => __awaiter(this, void 0, void 0, function* () {
-    return graphql_middleware_1.default(Object.assign({ simulatedLatency: debug.simulatedLatency || 0, resolversGlobPattern: paths.resolvers, typeDefsGlobPattern: paths.typeDefs, debug: debug.logging }, graphql));
+const typeormGraphqlMiddleware = ({ debug = {}, paths, applyMiddleware = [], graphql, }) => __awaiter(this, void 0, void 0, function* () {
+    return graphql_middleware_1.default(Object.assign({ simulatedLatency: debug.simulatedLatency || 0, resolversGlobPattern: paths.resolvers, typeDefsGlobPattern: paths.typeDefs, debug: debug.logging, applyMiddleware }, graphql));
 });
 exports.default = typeormGraphqlMiddleware;
 //# sourceMappingURL=index.js.map
