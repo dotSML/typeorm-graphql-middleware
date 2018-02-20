@@ -67,6 +67,7 @@ export default function graphqlServerMiddleware(
 		enableGraphiql,
 		whitelist,
 		applyMiddleware,
+		context,
 		...rest
 	} = options;
 
@@ -85,7 +86,7 @@ export default function graphqlServerMiddleware(
 		typeDefs: getTypeDefs(typeDefsGlobPattern),
 	});
 
-	const context = () => ({
+	const ctx = () => ({
 		loader: createTypeormLoader(),
 		...context,
 	});
@@ -102,7 +103,7 @@ export default function graphqlServerMiddleware(
 		graphqlExpress({
 			...rest,
 			schema,
-			context,
+			context: ctx,
 			formatResponse: (response: object) => {
 				return simulatedLatency === undefined || simulatedLatency === 0
 					? formatResponseFn(response)
