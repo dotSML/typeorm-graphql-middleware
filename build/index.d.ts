@@ -19,7 +19,7 @@ export interface TypeormGraphqlMiddlewareConfig {
         logging?: boolean;
     };
     applyMiddleware?: Array<(args?: any) => any>;
-    corsOptions: cors.CorsOptions;
+    corsOptions?: cors.CorsOptions;
 }
 declare const typeormGraphqlMiddleware: ({debug, paths, applyMiddleware, corsOptions, graphql}: TypeormGraphqlMiddlewareConfig) => Promise<express.Router>;
 export default typeormGraphqlMiddleware;

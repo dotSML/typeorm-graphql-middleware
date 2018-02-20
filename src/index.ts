@@ -18,7 +18,7 @@ export interface TypeormGraphqlMiddlewareConfig {
 		logging?: boolean;
 	};
 	applyMiddleware?: Array<(args?: any) => any>;
-	corsOptions: cors.CorsOptions;
+	corsOptions?: cors.CorsOptions;
 }
 
 const typeormGraphqlMiddleware = async ({
