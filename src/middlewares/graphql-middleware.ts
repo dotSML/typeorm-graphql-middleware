@@ -86,10 +86,19 @@ export default function graphqlServerMiddleware(
 		typeDefs: getTypeDefs(typeDefsGlobPattern),
 	});
 
-	const ctx = () => ({
-		loader: createTypeormLoader(),
-		...context,
-	});
+	const ctx = (req: express.Request | undefined) => {
+		if (typeof context === 'function') {
+			return {
+				loader: createTypeormLoader(),
+				...context(req),
+			};
+		}
+
+		return {
+			loader: createTypeormLoader(),
+			...context,
+		};
+	};
 
 	const formatResponseFn = (response: object) => {
 		return rest.formatResponse ? rest.formatResponse(response) : response;
@@ -100,16 +109,16 @@ export default function graphqlServerMiddleware(
 		whitelist ? cors(corsOptions) : (_, __, next) => next(),
 		bodyParser.json(),
 		...applyMiddleware,
-		graphqlExpress({
+		graphqlExpress(req => ({
 			...rest,
 			schema,
-			context: ctx,
+			context: ctx(req),
 			formatResponse: (response: object) => {
 				return simulatedLatency === undefined || simulatedLatency === 0
 					? formatResponseFn(response)
 					: new Promise(resolve => setTimeout(() => resolve(formatResponseFn(response)), simulatedLatency));
 			},
-		}),
+		})),
 	);
 
 	if (enableGraphiql) {
