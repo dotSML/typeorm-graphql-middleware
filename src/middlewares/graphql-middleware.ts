@@ -54,6 +54,7 @@ export default function graphqlServerMiddleware(
 		resolversGlobPattern: string[];
 		typeDefsGlobPattern: string[];
 		applyMiddleware: Array<(args?: any) => any>;
+		corsOptions?: cors.CorsOptions;
 	},
 ): express.Router {
 	const router = express.Router();
@@ -68,10 +69,11 @@ export default function graphqlServerMiddleware(
 		whitelist,
 		applyMiddleware,
 		context,
+		corsOptions,
 		...rest
 	} = options;
 
-	const corsOptions: cors.CorsOptions = {
+	const corsOpt: cors.CorsOptions = {
 		origin: (origin, callback) => {
 			if (origin === undefined || (whitelist && whitelist.indexOf(origin) !== -1)) {
 				callback(null, true);
@@ -79,6 +81,7 @@ export default function graphqlServerMiddleware(
 				callback(null, false);
 			}
 		},
+		...corsOptions,
 	};
 
 	const schema = makeExecutableSchema({
@@ -86,11 +89,11 @@ export default function graphqlServerMiddleware(
 		typeDefs: getTypeDefs(typeDefsGlobPattern),
 	});
 
-	const ctx = (req: express.Request | undefined) => {
+	const ctx = (req?: express.Request, res?: express.Response) => {
 		if (typeof context === 'function') {
 			return {
 				loader: createTypeormLoader(),
-				...context(req),
+				...context(req, res),
 			};
 		}
 
@@ -106,13 +109,13 @@ export default function graphqlServerMiddleware(
 
 	router.use(
 		endpointUrl || '/graphql',
-		whitelist ? cors(corsOptions) : (_, __, next) => next(),
+		whitelist ? cors(corsOpt) : (_, __, next) => next(),
 		bodyParser.json(),
 		...applyMiddleware,
-		graphqlExpress(req => ({
+		graphqlExpress((req, res) => ({
 			...rest,
 			schema,
-			context: ctx(req),
+			context: ctx(req, res),
 			formatResponse: (response: object) => {
 				return simulatedLatency === undefined || simulatedLatency === 0
 					? formatResponseFn(response)
@@ -124,7 +127,7 @@ export default function graphqlServerMiddleware(
 	if (enableGraphiql) {
 		router.use(
 			graphiqlUrl || '/graphiql',
-			whitelist ? cors(corsOptions) : (_, __, next) => next(),
+			whitelist ? cors(corsOpt) : (_, __, next) => next(),
 			bodyParser.json(),
 			graphiqlExpress({
 				endpointURL: endpointUrl || '/graphql',

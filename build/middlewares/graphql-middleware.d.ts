@@ -1,5 +1,7 @@
+/// <reference types="cors" />
 /// <reference types="express" />
 import * as express from 'express';
+import * as cors from 'cors';
 import { ValidationContext, GraphQLFieldResolver, GraphQLError } from 'graphql';
 import { TypeormLoader } from '../services/typeorm-loader';
 export declare enum LogAction {
@@ -43,4 +45,5 @@ export default function graphqlServerMiddleware(options: GraphqlServerOptions & 
     resolversGlobPattern: string[];
     typeDefsGlobPattern: string[];
     applyMiddleware: Array<(args?: any) => any>;
+    corsOptions?: cors.CorsOptions;
 }): express.Router;

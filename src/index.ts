@@ -4,6 +4,7 @@ import resolve from './services/resolve-helper';
 import createTypings from './services/create-typings';
 import createSchema from './services/create-schema';
 import * as express from 'express';
+import * as cors from 'cors';
 import createTypeormLoader, { TypeormLoader } from './services/typeorm-loader';
 
 export interface TypeormGraphqlMiddlewareConfig {
@@ -17,12 +18,14 @@ export interface TypeormGraphqlMiddlewareConfig {
 		logging?: boolean;
 	};
 	applyMiddleware?: Array<(args?: any) => any>;
+	corsOptions: cors.CorsOptions;
 }
 
 const typeormGraphqlMiddleware = async ({
 	debug = {},
 	paths,
 	applyMiddleware = [],
+	corsOptions,
 	graphql,
 }: TypeormGraphqlMiddlewareConfig) => {
 	return graphqlMiddleware({
@@ -31,6 +34,7 @@ const typeormGraphqlMiddleware = async ({
 		typeDefsGlobPattern: paths.typeDefs,
 		debug: debug.logging,
 		applyMiddleware,
+		corsOptions,
 		...graphql,
 	}) as express.Router;
 };
