@@ -19,7 +19,7 @@ const get_resolvers_1 = require("../services/get-resolvers");
 const typeorm_loader_1 = require("../services/typeorm-loader");
 function graphqlServerMiddleware(options) {
     const router = express.Router();
-    const { simulatedLatency, resolversGlobPattern, typeDefsGlobPattern, endpointUrl, graphiqlUrl, enableGraphiql, whitelist, applyMiddleware } = options, rest = __rest(options, ["simulatedLatency", "resolversGlobPattern", "typeDefsGlobPattern", "endpointUrl", "graphiqlUrl", "enableGraphiql", "whitelist", "applyMiddleware"]);
+    const { simulatedLatency, resolversGlobPattern, typeDefsGlobPattern, endpointUrl, graphiqlUrl, enableGraphiql, whitelist, applyMiddleware, context } = options, rest = __rest(options, ["simulatedLatency", "resolversGlobPattern", "typeDefsGlobPattern", "endpointUrl", "graphiqlUrl", "enableGraphiql", "whitelist", "applyMiddleware", "context"]);
     const corsOptions = {
         origin: (origin, callback) => {
             if (origin === undefined || (whitelist && whitelist.indexOf(origin) !== -1)) {
@@ -34,12 +34,11 @@ function graphqlServerMiddleware(options) {
         resolvers: get_resolvers_1.default(resolversGlobPattern),
         typeDefs: get_type_definitions_1.default(typeDefsGlobPattern),
     });
-    const context = () => (Object.assign({ loader: typeorm_loader_1.default() }, context));
+    const ctx = () => (Object.assign({ loader: typeorm_loader_1.default() }, context));
     const formatResponseFn = (response) => {
         return rest.formatResponse ? rest.formatResponse(response) : response;
     };
-    router.use(endpointUrl || '/graphql', whitelist ? cors(corsOptions) : (_, __, next) => next(), bodyParser.json(), ...applyMiddleware, apollo_server_express_1.graphqlExpress(Object.assign({}, rest, { schema,
-        context, formatResponse: (response) => {
+    router.use(endpointUrl || '/graphql', whitelist ? cors(corsOptions) : (_, __, next) => next(), bodyParser.json(), ...applyMiddleware, apollo_server_express_1.graphqlExpress(Object.assign({}, rest, { schema, context: ctx, formatResponse: (response) => {
             return simulatedLatency === undefined || simulatedLatency === 0
                 ? formatResponseFn(response)
                 : new Promise(resolve => setTimeout(() => resolve(formatResponseFn(response)), simulatedLatency));
