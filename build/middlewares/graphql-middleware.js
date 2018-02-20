@@ -34,15 +34,20 @@ function graphqlServerMiddleware(options) {
         resolvers: get_resolvers_1.default(resolversGlobPattern),
         typeDefs: get_type_definitions_1.default(typeDefsGlobPattern),
     });
-    const ctx = () => (Object.assign({ loader: typeorm_loader_1.default() }, context));
+    const ctx = (req) => {
+        if (typeof context === 'function') {
+            return Object.assign({ loader: typeorm_loader_1.default() }, context(req));
+        }
+        return Object.assign({ loader: typeorm_loader_1.default() }, context);
+    };
     const formatResponseFn = (response) => {
         return rest.formatResponse ? rest.formatResponse(response) : response;
     };
-    router.use(endpointUrl || '/graphql', whitelist ? cors(corsOptions) : (_, __, next) => next(), bodyParser.json(), ...applyMiddleware, apollo_server_express_1.graphqlExpress(Object.assign({}, rest, { schema, context: ctx, formatResponse: (response) => {
+    router.use(endpointUrl || '/graphql', whitelist ? cors(corsOptions) : (_, __, next) => next(), bodyParser.json(), ...applyMiddleware, apollo_server_express_1.graphqlExpress(req => (Object.assign({}, rest, { schema, context: ctx(req), formatResponse: (response) => {
             return simulatedLatency === undefined || simulatedLatency === 0
                 ? formatResponseFn(response)
                 : new Promise(resolve => setTimeout(() => resolve(formatResponseFn(response)), simulatedLatency));
-        } })));
+        } }))));
     if (enableGraphiql) {
         router.use(graphiqlUrl || '/graphiql', whitelist ? cors(corsOptions) : (_, __, next) => next(), bodyParser.json(), apollo_server_express_1.graphiqlExpress({
             endpointURL: endpointUrl || '/graphql',
