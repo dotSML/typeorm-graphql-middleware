@@ -4,7 +4,11 @@ import { resolve } from '../../../../../src'; // import { resolve } from 'typeor
 
 const resolver: GQL.Resolver = {
 	Query: {
-		postList: resolve(PostEntity).find(),
+		postList: resolve<GQL.QueryPostListResolver>(async () => {
+			const post = await PostEntity.find();
+
+			return post;
+		}),
 	},
 
 	Mutation: {

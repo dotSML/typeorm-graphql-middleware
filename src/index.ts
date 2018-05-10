@@ -1,6 +1,6 @@
 import graphqlMiddleware, { GraphqlServerOptions, GraphqlServerContext } from './middlewares/graphql-middleware';
 import { FieldResolver, SubscriptionResolver, RootResolver } from './typings';
-import resolve from './services/resolve-helper';
+// import resolve from './services/resolve-helper';
 import createTypings from './services/create-typings';
 import createSchema from './services/create-schema';
 import * as express from 'express';
@@ -40,6 +40,8 @@ const typeormGraphqlMiddleware = async ({
 };
 
 export default typeormGraphqlMiddleware;
+
+const resolve = <T extends (...args: any[]) => any>(fn: T) => (...args: any[]) => fn(...args);
 
 export {
 	FieldResolver,

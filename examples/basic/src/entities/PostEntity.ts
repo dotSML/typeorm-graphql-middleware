@@ -10,6 +10,4 @@ export default class PostEntity extends BaseEntity {
 
 	@ManyToOne(_ => UserEntity, user => user.posts)
 	public user: Promise<UserEntity>;
-
-	@Column() public userId: string;
 }

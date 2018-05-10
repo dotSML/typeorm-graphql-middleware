@@ -9,8 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_middleware_1 = require("./middlewares/graphql-middleware");
-const resolve_helper_1 = require("./services/resolve-helper");
-exports.resolve = resolve_helper_1.default;
+// import resolve from './services/resolve-helper';
 const create_typings_1 = require("./services/create-typings");
 exports.createTypings = create_typings_1.default;
 const create_schema_1 = require("./services/create-schema");
@@ -22,4 +21,6 @@ const typeormGraphqlMiddleware = ({ debug = {}, paths, applyMiddleware = [], cor
         corsOptions }, graphql));
 });
 exports.default = typeormGraphqlMiddleware;
+const resolve = (fn) => (...args) => fn(...args);
+exports.resolve = resolve;
 //# sourceMappingURL=index.js.map

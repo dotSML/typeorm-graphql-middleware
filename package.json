@@ -1,6 +1,6 @@
 {
 	"name": "typeorm-graphql-middleware",
-	"version": "0.5.5",
+	"version": "0.5.6",
 	"description": "middleware and helpers for connection graphql and typeorm",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
