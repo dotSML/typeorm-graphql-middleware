@@ -34,7 +34,7 @@
 		"deepmerge": "2.0.1",
 		"express": "4.16.2",
 		"glob": "7.1.2",
-		"graphql": "git://github.com/graphql/graphql-js.git#npm",
+		"graphql": "15.3.0",
 		"graphql-codegen-compiler": "0.8.14",
 		"graphql-codegen-core": "0.8.14",
 		"graphql-tools": "2.18.0",
