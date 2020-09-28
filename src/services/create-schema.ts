@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as mkdirp from 'mkdirp';
-import { mergeTypes } from 'merge-graphql-schemas';
+import { mergeTypeDefs } from '@graphql-tools/merge';
 import getTypeDefs from './get-type-definitions';
 
 let cachedContent = '';
@@ -10,7 +10,7 @@ export default (typeDefsPath: string[], outputPath: string) => {
 	let typeDefs = getTypeDefs(typeDefsPath);
 	typeDefs = typeDefs.map(def => def.replace(/\s*extend\s*/g, ''));
 
-	const schema = mergeTypes(typeDefs);
+	const schema = mergeTypeDefs(typeDefs).toString();
 
 	if (cachedContent !== schema) {
 		mkdirp.sync(path.dirname(outputPath));
